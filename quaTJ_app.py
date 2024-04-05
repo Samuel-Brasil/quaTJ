@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 img1 = 'https://www.cnj.jus.br/wp-content/uploads/2020/07/fachada-tjes_787.jpg'
 st.image(img1, width=600)
 
-st.title("App - Prêmio CNJ de Qualidade")
+st.title("TJES - Núcleo de Gestão da Qualidade")
+st.header("LI2 - Lab de Inovação e IA")
 st.subheader("Por: Samuel Brasil")
 st.write("Pontuação máxima: Governança = 680, Produtividade = 715, Transparência = 120, Dados e TI = 651")
 st.divider()
