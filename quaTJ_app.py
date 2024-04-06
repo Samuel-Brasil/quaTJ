@@ -3,13 +3,18 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Display an image and set the title of the app
-img1 = 'https://www.cnj.jus.br/wp-content/uploads/2020/07/fachada-tjes_787.jpg'
-st.image(img1, width=600)
+img1 = 'http://vixcircle.org/wp-content/uploads/2024/04/qualIA_2.webp'
+st.columns(3)[1].image(img1, width=260)
 
-st.title("TJES - Núcleo de Gestão da Qualidade")
-st.header("LI2 - Lab de Inovação e IA")
-st.subheader("Por: Samuel Brasil")
-st.write("Pontuação máxima: Governança = 680, Produtividade = 715, Transparência = 120, Dados e TI = 651")
+style = "<h1 style='text-align: center; color: red;'> QualIA </h2>"
+st.markdown(style, unsafe_allow_html=True)
+
+st.latex(r'''
+    LI^2 + SIP_\varepsilon C
+    ''')
+st.markdown("*Por:* ***Samuel Brasil***")
+
+st.write("Governança = 680, Produtividade = 715, Transparência = 120, Dados e TI = 651")
 st.divider()
 
 def initialize_state():
