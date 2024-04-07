@@ -2,40 +2,35 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Display an image and set the title of the app
-img1 = 'http://vixcircle.org/wp-content/uploads/2024/04/qualIA_2.webp'
-st.columns(3)[1].image(img1, width=260)
+# Sidebar content
+with st.sidebar:
+    img1='http://vixcircle.org/wp-content/uploads/2024/04/qualIA_2.webp'
+    st.columns(3)[1].image(img1, width=100)
+    style = "<h1 style='text-align: center; color: red;'> QualIA </h1>"
+    st.markdown(style, unsafe_allow_html=True)
+    st.latex(r'''
+        LI^2 + SIP_\varepsilon C
+        ''')
+    st.markdown("*Por:* ***Samuel Brasil***")
+    st.divider()
 
-style = "<h1 style='text-align: center; color: red;'> QualIA </h2>"
-st.markdown(style, unsafe_allow_html=True)
-
-st.latex(r'''
-    LI^2 + SIP_\varepsilon C
-    ''')
-st.markdown("*Por:* ***Samuel Brasil***")
-
-st.write("Governança = 680, Produtividade = 715, Transparência = 120, Dados e TI = 651")
-st.divider()
-
-def initialize_state():
-    # Initialize or reset the session state variables
-    if 'sections' not in st.session_state:
-        st.session_state.sections = {}
-    else:
-        st.session_state.sections.clear()
-
-    if 'options_values' not in st.session_state:
-        st.session_state.options_values = {}
-    else:
-        st.session_state.options_values.clear()
-
-    if 'uploaded_selections_set' not in st.session_state:
-        st.session_state.uploaded_selections_set = set()
-    else:
-        st.session_state.uploaded_selections_set.clear()
-
-def streamlit_app():
     # Initialize session state variables
+    def initialize_state():
+        if 'sections' not in st.session_state:
+            st.session_state.sections = {}
+        else:
+            st.session_state.sections.clear()
+
+        if 'options_values' not in st.session_state:
+            st.session_state.options_values = {}
+        else:
+            st.session_state.options_values.clear()
+
+        if 'uploaded_selections_set' not in st.session_state:
+            st.session_state.uploaded_selections_set = set()
+        else:
+            st.session_state.uploaded_selections_set.clear()
+
     initialize_state()
 
     # File uploader widget for the structure
@@ -60,7 +55,6 @@ def streamlit_app():
         selections_file = st.file_uploader("Carregue o arquivo 'selections.csv', com a última versão salva - É NECESSÁRIO CARREGAR A ESTRUTURA ANTES", type=['csv'], key="selections_uploader")
         if selections_file is not None:
             df_uploaded = pd.read_csv(selections_file)
-            # Create a set of selections for easy lookup
             st.session_state.uploaded_selections_set = set([f"{row['Category']}_{row['Option']}" for index, row in df_uploaded.iterrows()])
 
         colors = ['blue', 'green', 'orange', 'red']
@@ -72,48 +66,48 @@ def streamlit_app():
             st.subheader(section)
             for option, value in zip(options, st.session_state.options_values[section]):
                 checkbox_id = f'{section}_{option}'
-                # Determine if the checkbox should be pre-checked
                 is_checked = checkbox_id in st.session_state.uploaded_selections_set
                 if st.checkbox(f'{option} - {value}', key=checkbox_id, value=is_checked):
                     total_scores[section] += value
                     selections.append([section, option, value])
 
-        # Plotting and saving logic remains unchanged
 
-        # Remaining plotting and saving logic remains unchanged
-        # Plotting the bar chart with the scores
-        fig, ax = plt.subplots()
-        categories = list(total_scores.keys())
-        scores = list(total_scores.values())
-        ax.bar(categories, scores, color=colors)
-        ax.set_xlabel('Categorias')
-        ax.set_ylabel('Pontuação')
-        ax.set_title('Prêmio CNJ de Qualidade')
+# Main page content
+style = "<h1 style='text-align: center; color: red;'> QualIA </h2>"
+st.markdown(style, unsafe_allow_html=True)
 
-        # Adding the scores to the bar chart
-        for i, score in enumerate(scores):
-            ax.text(i, score + 1, str(score), ha='center', va='bottom')
-
-        # Display the bar chart
-        st.pyplot(fig)
-
-        # If the save button is pressed, save selections to CSV
-        if st.button('Save Selections to CSV'):
-            df = pd.DataFrame(selections, columns=['Category', 'Option', 'Value'])
-            df.to_csv('selections.csv', index=False)
-            st.success('Selections saved to CSV!')
-
-        # Provide a download link for the CSV file
-        if selections:
-            df = pd.DataFrame(selections, columns=['Category', 'Option', 'Value'])
-            csv = df.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="Download selections as CSV",
-                data=csv,
-                file_name='selections.csv',
-                mime='text/csv',
-            )
+st.write("Governança = 680, Produtividade = 715, Transparência = 120, Dados e TI = 651")
 
 
-# Run the Streamlit app
-streamlit_app()
+if structure_file is not None:
+    # Plotting the bar chart with the scores
+    fig, ax = plt.subplots()
+    categories = list(total_scores.keys())
+    scores = list(total_scores.values())
+    ax.bar(categories, scores, color=colors)
+    ax.set_xlabel('Categorias')
+    ax.set_ylabel('Pontuação')
+    ax.set_title('Prêmio CNJ de Qualidade')
+
+    for i, score in enumerate(scores):
+        ax.text(i, score + 1, str(score), ha='center', va='bottom')
+
+    # Display the bar chart
+    st.pyplot(fig)
+
+    # If the save button is pressed, save selections to CSV
+    if st.button('Save Selections to CSV'):
+        df = pd.DataFrame(selections, columns=['Category', 'Option', 'Value'])
+        df.to_csv('selections.csv', index=False)
+        st.success('Selections saved to CSV!')
+
+    # Provide a download link for the CSV file
+    if selections:
+        df = pd.DataFrame(selections, columns=['Category', 'Option', 'Value'])
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download selections as CSV",
+            data=csv,
+            file_name='selections.csv',
+            mime='text/csv',
+        )
